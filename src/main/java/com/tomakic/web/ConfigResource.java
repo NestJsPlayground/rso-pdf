@@ -26,8 +26,17 @@ public class ConfigResource {
 
 
     @GET
-    @Path("/{url}")
-    public Response getBook(@PathParam("url") String urlText) {
+    @Path("/get/{hash}")
+    public Response getPage(@PathParam("hash") String hash) {
+        if (cache.containsKey(hash)) {
+            return Response.ok(cache.get(hash).getBody()).build();
+        }
+        return Response.serverError().build();
+    }
+
+    @GET
+    @Path("/cache/{url}")
+    public Response cache(@PathParam("url") String urlText) {
 
         try {
             MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
@@ -54,7 +63,7 @@ public class ConfigResource {
                 Html x = new Html();
                 x.setId(hash);
                 x.setBody(out);
-
+                cache.put(hash, x);
                 return Response.ok(x).build();
             } catch (Exception e) {
                 e.printStackTrace();

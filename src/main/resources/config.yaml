@@ -20,6 +20,6 @@ kumuluzee:
     ping-interval: 15
 
 rest-config:
-  string-property: Monday
+  string-property: test
   boolean-property: true
   integer-property: 23
