@@ -19,7 +19,7 @@ import java.util.HashMap;
 @Produces(MediaType.APPLICATION_JSON)
 public class ConfigResource {
 
-    private HashMap<String, Html> cache = new HashMap<>();
+    private static HashMap<String, Html> cache = new HashMap<>();
 
     @Inject
     private ConfigProperties properties;
@@ -45,7 +45,10 @@ public class ConfigResource {
 
 
             if (cache.containsKey(hash)) {
-                return Response.ok(cache.get(hash)).build();
+                String key = Base64.getEncoder().encodeToString(hash.getBytes());
+                Html xs = new Html();
+                xs.setId(key);
+                return Response.ok(xs).build();
             }
 
 
@@ -62,13 +65,13 @@ public class ConfigResource {
                 }
                 Html x = new Html();
 
-                x.setId(urlText);
+                String key = Base64.getEncoder().encodeToString(hash.getBytes());
+                x.setId(key);
                 x.setBody(out);
-                cache.put(urlText, x);
+                cache.put(key, x);
 
                 Html xs = new Html();
-                x.setId(urlText);
-                x.setBody(hash);
+                xs.setId(key);
                 return Response.ok(xs).build();
             } catch (Exception e) {
                 e.printStackTrace();
