@@ -1,0 +1,32 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: rso-pdf
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: rso-pdf
+    spec:
+      containers:
+      - image: tilen/rso-web
+        name: apiseed
+        ports:
+        - containerPort: 8080
+          name: server
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        env:
+          - name: LOGZIO_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: app-secret
+                key: logzio
+          - name: DEPLOY_VERSION
+            value: "%DEPLOY_VERSION%"

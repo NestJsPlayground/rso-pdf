@@ -14,7 +14,7 @@ cache:
   - $HOME/.m2
 
 env:
-  - DOCKER_IMAGE=tilen/rso-order
+  - DOCKER_IMAGE=tilen/rso-pdf
 
 script:
   - mvn clean package -U
@@ -22,4 +22,5 @@ script:
 
 after_success:
   - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+  - docker tag stable:1 "$DOCKER_IMAGE"
   - docker push "$DOCKER_IMAGE"

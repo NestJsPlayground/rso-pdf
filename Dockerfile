@@ -4,8 +4,8 @@ RUN mkdir /app
 
 WORKDIR /app
 
-ADD ./api/target/web-1.0.0.jar /app
+ADD ./target/web-1.0.0.jar /app
 
-EXPOSE 8081
+EXPOSE 8080
 
 CMD ["java", "-jar", "web-1.0.0.jar"]
