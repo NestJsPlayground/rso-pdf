@@ -14,7 +14,7 @@ cache:
   - $HOME/.m2
 
 env:
-  - DOCKER_IMAGE=tilen/rso-pdf:stable-2
+  - DOCKER_IMAGE=tilen/rso-pdf:stable-3
 
 script:
   - mvn clean package -U

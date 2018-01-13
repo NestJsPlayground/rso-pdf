@@ -10,7 +10,7 @@ spec:
         app: rso-pdf
     spec:
       containers:
-      - image: tilen/rso-pdf:stable-2
+      - image: tilen/rso-pdf:stable-3
         name: apiseed
         ports:
         - containerPort: 8080

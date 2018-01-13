@@ -61,10 +61,15 @@ public class ConfigResource {
                     out += inputLine;
                 }
                 Html x = new Html();
-                x.setId(hash);
+
+                x.setId(urlText);
                 x.setBody(out);
-                cache.put(hash, x);
-                return Response.ok(x).build();
+                cache.put(urlText, x);
+
+                Html xs = new Html();
+                x.setId(urlText);
+                x.setBody(hash);
+                return Response.ok(xs).build();
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
