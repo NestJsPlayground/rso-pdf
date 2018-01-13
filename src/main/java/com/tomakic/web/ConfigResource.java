@@ -29,7 +29,7 @@ public class ConfigResource {
     @Path("/get/{hash}")
     public Response getPage(@PathParam("hash") String hash) {
         if (cache.containsKey(hash)) {
-            return Response.ok(cache.get(hash)).build();
+            return Response.ok(cache.get(hash).getBody()).type(MediaType.TEXT_PLAIN).build();
         }
         return Response.serverError().build();
     }
