@@ -1,15 +1,17 @@
 package com.tomakic.web;
 
-import com.kumuluz.ee.configuration.utils.ConfigurationUtil;
-
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.security.MessageDigest;
+import java.util.Base64;
+import java.util.HashMap;
 
 @RequestScoped
 @Path("/")
@@ -17,9 +19,64 @@ import javax.ws.rs.core.Response;
 @Produces(MediaType.APPLICATION_JSON)
 public class ConfigResource {
 
+    private HashMap<String, Html> cache = new HashMap<>();
+
     @Inject
     private ConfigProperties properties;
 
+
+    @GET
+    @Path("/{url}")
+    public Response getBook(@PathParam("url") String urlText) {
+
+        try {
+            MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+            messageDigest.update(urlText.getBytes());
+            String hash = Base64.getEncoder().encodeToString(messageDigest.digest());
+
+
+            if (cache.containsKey(hash)) {
+                return Response.ok(cache.get(hash)).build();
+            }
+
+
+            BufferedReader in = null;
+            try {
+                URL url = new URL(urlText);
+                in = new BufferedReader(new InputStreamReader(url.openStream()));
+
+                String inputLine;
+                String out = "";
+                while ((inputLine = in.readLine()) != null) {
+                    // System.out.println(inputLine);
+                    out += inputLine;
+                }
+                Html x = new Html();
+                x.setId(hash);
+                x.setBody(out);
+
+                return Response.ok(x).build();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (in != null) {
+                    try {
+                        in.close();
+                    } catch (IOException e) {
+                        // e.printStackTrace();
+                        return Response.serverError().build();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            return Response.serverError().build();
+        }
+
+        return Response.ok(new Html()).build();
+    }
+
+
+    /*
     @GET
     @Path("/config")
     public Response test() {
@@ -43,5 +100,5 @@ public class ConfigResource {
     @Path("/get")
     public Response get() {
         return Response.ok(ConfigurationUtil.getInstance().get("rest-config.string-property").orElse("nope")).build();
-    }
+    }*/
 }

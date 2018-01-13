@@ -1,11 +1,23 @@
 kumuluzee:
-  name: customer-service
+  name: rso-pdf
   version: 1.0.0
   env:
     name: dev
   config:
-    start-retry-delay-ms: 500
+    start-retry-delay-ms: 3000
     max-retry-delay-ms: 900000
+    consul:
+      agent: http://consul:8500
+  server:
+    http:
+      port: 8080
+  health:
+    servlet:
+      mapping: /health
+      enabled: true
+  discovery:
+    ttl: 20
+    ping-interval: 15
 
 rest-config:
   string-property: Monday
